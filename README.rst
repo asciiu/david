@@ -6,7 +6,11 @@ A tale of machine learning.
 
 Running jupyter:
 ```
-pipenv run jupyter notebook
+$ pipenv shell
+
+In shell:
+$ python -m ipykernel install --user --name=david
+$ jupyter notebook
 ```
 ---------------
 
