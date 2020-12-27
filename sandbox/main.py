@@ -176,7 +176,7 @@ def draw_window(win, birds, pipes, base, score, gen):
     pygame.display.update()
 
 
-def main(genomes, config):
+def game(genomes, config):
     global GEN 
     GEN += 1
 
@@ -258,13 +258,14 @@ def main(genomes, config):
                 nets.pop(x)
                 ge.pop(x)
 
-        if score == 50:
+        if score == 30:
             break
 
         base.move()
         draw_window(win, birds, pipes, base, score, GEN)
 
     print("done")
+
 
 def run(config_path):
     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
@@ -277,7 +278,8 @@ def run(config_path):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
-    winner = p.run(main,50)
+    winner = p.run(game, 50)
+
 
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
