@@ -258,13 +258,13 @@ def game(genomes, config):
                 nets.pop(x)
                 ge.pop(x)
 
-        if score == 30:
+        if score == 10:
             break
 
         base.move()
         draw_window(win, birds, pipes, base, score, GEN)
 
-    print("done")
+    print("finished!")
 
 
 def run(config_path):
@@ -277,8 +277,7 @@ def run(config_path):
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
-
-    winner = p.run(game, 50)
+    p.run(game, 50)
 
 
 if __name__ == "__main__":
