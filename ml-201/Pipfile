@@ -5,6 +5,14 @@ name = "pypi"
 
 [packages]
 pandas = "*"
+pandas-datareader = "*"
+numpy = "*"
+sklearn = "*"
+matplotlib = "*"
+ipython = "*"
+bs4 = "*"
+requests = "*"
+tqdm = "*"
 
 [dev-packages]
 
