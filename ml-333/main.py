@@ -155,8 +155,33 @@ class Base:
         win.blit(self.IMG, (self.x1, self.y))
         win.blit(self.IMG, (self.x2, self.y))
 
+class Candle:
+    VEL = 6 
+    WIDTH = 20
+    RED = (255, 0, 0)
+    GREEN = (0, 255, 0)
+    FACTOR = 5000
 
-def draw_window(win, birds, pipes, base, score, gen):
+    def __init__(self, open, close, high, low):
+        self.open = open / self.FACTOR
+        self.close = close / self.FACTOR
+        self.high = high / self.FACTOR
+        self.low = low / self.FACTOR
+        self.height = self.close - self.open
+        self.x = 30
+        self.y = 30
+        
+    def move(self):
+        self.x -= self.VEL
+        if self.x + self.WIDTH < 0:
+            self.x = WIN_WIDTH 
+
+    def draw(self, win):
+        color = self.RED if self.close < self.open else self.GREEN
+        pygame.draw.rect(win, color, pygame.Rect(self.x, self.y, self.WIDTH, self.height))
+
+
+def draw_window(win, birds, pipes, base, score, gen, candle):
     win.blit(BG_IMG, (0,0))
     
     for pipe in pipes:
@@ -169,6 +194,7 @@ def draw_window(win, birds, pipes, base, score, gen):
     win.blit(text, (10, 10))
 
     base.draw(win)
+    candle.draw(win)
 
     for bird in birds:
         bird.draw(win)
@@ -196,6 +222,7 @@ def game(genomes, config):
     score = 0
     win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
     clock = pygame.time.Clock()
+    candle = Candle(open = 27000, close = 250000, high = 27500, low = 24999)
 
     run = True
     while run:
@@ -262,7 +289,8 @@ def game(genomes, config):
             break
 
         base.move()
-        draw_window(win, birds, pipes, base, score, GEN)
+        candle.move()
+        draw_window(win, birds, pipes, base, score, GEN, candle)
 
     print("finished!")
 
