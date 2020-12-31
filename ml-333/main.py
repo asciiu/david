@@ -250,8 +250,10 @@ def game(genomes, config):
             if output[0] > 0.5:
                 bird.jump()
 
+            if bird.y + bird.img.get_height() >= 730 or bird.y < 0:
+                birds.pop(x)
+
         add_pipe = False
-        rem = []
         for pipe in pipes:
             for x, bird in enumerate(birds):
                 if pipe.collide(bird):
@@ -262,27 +264,19 @@ def game(genomes, config):
                     add_pipe = True
 
             if pipe.x + pipe.PIPE_TOP.get_width() < 0:
-                rem.append(pipe)
+                pipes.remove(pipe)
 
             pipe.move()
 
         if add_pipe:
             score += 1
+            if score == 10:
+                break
 
             for bird in birds:
                 bird.score(5)
 
             pipes.append(Pipe(600))
-
-        for r in rem:
-            pipes.remove(r)
-
-        for x, bird in enumerate(birds):
-            if bird.y + bird.img.get_height() >= 730 or bird.y < 0:
-                birds.pop(x)
-
-        if score == 50:
-            break
 
         base.move()
         candle.move()
