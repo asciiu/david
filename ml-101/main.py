@@ -23,7 +23,7 @@ class Bird:
     ROT_VEL = 20
     ANIMATION_TIME = 5
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, net, genome):
         self.x = x
         self.y = y
         self.tilt = 0
@@ -32,6 +32,8 @@ class Bird:
         self.height = self.y
         self.img_count = 0
         self.img = self.IMGS[0]
+        self.net = net
+        self.genome = genome
 
     def jump(self):
         self.vel = -10.5
@@ -39,6 +41,7 @@ class Bird:
         self.height = self.y
 
     def move(self):
+        self.genome.fitness += 0.1
         self.tick_count += 1
 
         d = self.vel * self.tick_count + 1.5 * self.tick_count ** 2
@@ -57,6 +60,9 @@ class Bird:
         else:
             if self.tilt > -90:
                 self.tilt -= self.ROT_VEL
+
+    def score(self, points):
+        self.genome.fitness += points
 
     def draw(self, win):
         self.img_count += 1
@@ -85,8 +91,8 @@ class Bird:
         return pygame.mask.from_surface(self.img)
 
 class Pipe:
-    GAP = 200
-    VEL = 5
+    GAP = 170
+    VEL = 6 
 
     def __init__(self, x):
         self.x = x
@@ -132,7 +138,7 @@ class Pipe:
 
 
 class Base:
-    VEL = 5
+    VEL = 6 
     WIDTH = BASE_IMG.get_width()
     IMG = BASE_IMG
 
@@ -180,16 +186,12 @@ def game(genomes, config):
     global GEN 
     GEN += 1
 
-    nets = []
-    ge = []
     birds = []
 
     for _, g in genomes:
         net = neat.nn.FeedForwardNetwork.create(g, config)
-        nets.append(net)
-        birds.append(Bird(230, 350))
         g.fitness = 0
-        ge.append(g)
+        birds.append(Bird(230, 350, net, g))
 
     base = Base(730)
     pipes = [Pipe(600)]
@@ -199,7 +201,7 @@ def game(genomes, config):
 
     run = True
     while run:
-        clock.tick(30)
+        clock.tick(120)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -216,50 +218,38 @@ def game(genomes, config):
     
         for x, bird in enumerate(birds):
             bird.move()
-            ge[x].fitness += 0.1
 
-            output = nets[x].activate((bird.y, abs(bird.y - pipes[pipe_ind].height), abs(bird.y - pipes[pipe_ind].bottom)))
-
+            output = bird.net.activate((bird.y, abs(bird.y - pipes[pipe_ind].height), abs(bird.y - pipes[pipe_ind].bottom)))
             if output[0] > 0.5:
                 bird.jump()
 
+            if bird.y + bird.img.get_height() >= 730 or bird.y < 0:
+                birds.pop(x)
+
         add_pipe = False
-        rem = []
         for pipe in pipes:
             for x, bird in enumerate(birds):
                 if pipe.collide(bird):
-                    ge[x].fitness -= 1
                     birds.pop(x)
-                    nets.pop(x)
-                    ge.pop(x)
+                    continue
 
                 if not pipe.passed and pipe.x < bird.x:
+                    bird.score(5)
                     pipe.passed = True
                     add_pipe = True
 
             if pipe.x + pipe.PIPE_TOP.get_width() < 0:
-                rem.append(pipe)
+                pipes.remove(pipe)
+                continue
 
             pipe.move()
 
         if add_pipe:
             score += 1
-            for g in ge:
-                g.fitness += 5
+            if score == 11:
+                break
 
             pipes.append(Pipe(600))
-
-        for r in rem:
-            pipes.remove(r)
-
-        for x, bird in enumerate(birds):
-            if bird.y + bird.img.get_height() >= 730 or bird.y < 0:
-                birds.pop(x)
-                nets.pop(x)
-                ge.pop(x)
-
-        if score == 10:
-            break
 
         base.move()
         draw_window(win, birds, pipes, base, score, GEN)
