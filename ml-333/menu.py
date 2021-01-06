@@ -20,9 +20,9 @@ class MainMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
         self.state = "Start"
-        self.startx, self.starty = self.mid_w, self.mid_h + 30
-        self.optionsx, self.optionsy = self.mid_w, self.mid_h + 50
-        self.creditsx, self.creditsy = self.mid_w, self.mid_h + 70
+        self.startx, self.starty = self.mid_w, self.mid_h + 150
+        self.optionsx, self.optionsy = self.mid_w, self.mid_h + 170
+        self.creditsx, self.creditsy = self.mid_w, self.mid_h + 190
         self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
 
     def display_menu(self):
@@ -37,7 +37,6 @@ class MainMenu(Menu):
             self.game.draw_text("Credits", 20, self.creditsx, self.creditsy)
             self.draw_cursor()
             self.blit_screen()
-
 
     def move_cursor(self):
         if self.game.DOWN_KEY:
