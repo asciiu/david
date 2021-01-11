@@ -1,6 +1,40 @@
 import pygame
+import os
 from menu import *
 
+
+BASE_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("assets", "base.png")))
+BG_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("assets", "bg.png")))
+
+class Base:
+    VEL = 6 
+    WIDTH = BASE_IMG.get_width()
+    IMG = BASE_IMG
+
+    def __init__(self, y):
+        self.y = y
+        self.x1 = 0
+        self.x2 = self.WIDTH
+        self.x3 = self.WIDTH * 2
+
+    def move(self):
+        self.x1 -= self.VEL
+        self.x2 -= self.VEL
+        self.x3 -= self.VEL
+
+        if self.x1 + self.WIDTH < 0:
+            self.x1 = self.x3 + self.WIDTH
+
+        if self.x2 + self.WIDTH < 0:
+            self.x2 = self.x1 + self.WIDTH
+
+        if self.x3 + self.WIDTH < 0:
+            self.x3 = self.x2 + self.WIDTH
+
+    def draw(self, win):
+        win.blit(self.IMG, (self.x1, self.y))
+        win.blit(self.IMG, (self.x2, self.y))
+        win.blit(self.IMG, (self.x3, self.y))
 
 class Game():
     def __init__(self):
@@ -19,16 +53,25 @@ class Game():
         self.curr_menu = self.main_menu
 
     def game_loop(self):
+        base = Base(self.DISPLAY_H-30)
+        clock = pygame.time.Clock()
+
         while self.playing:
+            clock.tick(120)
+
             self.check_events()
             if self.START_KEY:
                 self.playing= False
+
             self.display.fill(self.BLACK)
-            self.draw_text('Thanks for Playing', 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
+            self.draw_text('Playing', 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
             self.window.blit(self.display, (0,0))
+
+            base.move()
+            base.draw(self.window)
+
             pygame.display.update()
             self.reset_keys()
-
 
 
     def check_events(self):
