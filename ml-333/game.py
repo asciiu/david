@@ -60,19 +60,15 @@ class Game():
             clock.tick(120)
 
             self.check_events()
-            if self.START_KEY:
-                self.playing= False
-
             self.display.fill(self.BLACK)
             self.draw_text('Playing', 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
             self.window.blit(self.display, (0,0))
 
             base.move()
             base.draw(self.window)
-
             pygame.display.update()
-            self.reset_keys()
 
+            self.reset_keys()
 
     def check_events(self):
         for event in pygame.event.get():
@@ -88,6 +84,8 @@ class Game():
                     self.DOWN_KEY = True
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
+                if event.key == pygame.K_ESCAPE:
+                    self.playing = False
 
     def reset_keys(self):
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
