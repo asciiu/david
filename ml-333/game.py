@@ -1,6 +1,7 @@
 import pygame
 import os
 from menu import *
+from car import Car
 
 
 BASE_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("assets", "base.png")))
@@ -36,6 +37,8 @@ class Base:
         win.blit(self.IMG, (self.x2, self.y))
         win.blit(self.IMG, (self.x3, self.y))
 
+RED = (255, 0, 0)
+
 class Game():
     def __init__(self):
         pygame.init()
@@ -52,13 +55,18 @@ class Game():
         self.credits = CreditsMenu(self)
         self.curr_menu = self.main_menu
 
+        self.all_sprites_list = pygame.sprite.Group()
+        # player car
+        playerCar = Car(RED, 20, 30)
+        playerCar.rect.x = 200
+        playerCar.rect.y = 300
+        self.all_sprites_list.add(playerCar)
+
     def game_loop(self):
         base = Base(self.DISPLAY_H-30)
         clock = pygame.time.Clock()
 
         while self.playing:
-            clock.tick(120)
-
             self.check_events()
             self.display.fill(self.BLACK)
             self.draw_text('Playing', 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
@@ -66,9 +74,16 @@ class Game():
 
             base.move()
             base.draw(self.window)
+
+            self.all_sprites_list.update()
+            self.all_sprites_list.draw(self.window)
+
             pygame.display.update()
 
             self.reset_keys()
+
+            # frames per sec
+            clock.tick(120)
 
     def check_events(self):
         for event in pygame.event.get():
