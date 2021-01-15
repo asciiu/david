@@ -37,7 +37,6 @@ class Base:
         win.blit(self.IMG, (self.x2, self.y))
         win.blit(self.IMG, (self.x3, self.y))
 
-RED = (255, 0, 0)
 
 class Game():
     def __init__(self):
@@ -56,9 +55,7 @@ class Game():
         self.curr_menu = self.main_menu
 
         # player car
-        self.player = Player()
-        self.player.rect.x = 300
-        self.player.rect.y = 400
+        self.player = Player(src = "assets/bird1.png", x = 300, y = 100)
         
         self.all_sprites_list = pygame.sprite.Group()
         self.all_sprites_list.add(self.player)
@@ -108,6 +105,10 @@ class Game():
             self.player.moveLeft(5)
         if keys[pygame.K_RIGHT]:
             self.player.moveRight(5)
+        if keys[pygame.K_UP]:
+            self.player.moveUp(5)
+        if keys[pygame.K_DOWN]:
+            self.player.moveDown(5)
 
     def reset_keys(self):
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
