@@ -1,7 +1,7 @@
 import pygame
 import os
 from menu import *
-from car import Car
+from player import Player
 
 
 BASE_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("assets", "base.png")))
@@ -56,12 +56,12 @@ class Game():
         self.curr_menu = self.main_menu
 
         # player car
-        self.playerCar = Car(RED, 20, 30)
-        self.playerCar.rect.x = 200
-        self.playerCar.rect.y = 300
+        self.player = Player()
+        self.player.rect.x = 300
+        self.player.rect.y = 400
         
         self.all_sprites_list = pygame.sprite.Group()
-        self.all_sprites_list.add(self.playerCar)
+        self.all_sprites_list.add(self.player)
 
     def game_loop(self):
         base = Base(self.DISPLAY_H-30)
@@ -70,7 +70,7 @@ class Game():
         while self.playing:
             self.check_events()
             self.display.fill(self.BLACK)
-            self.draw_text('Playing', 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
+            #self.draw_text('Playing', 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
             self.window.blit(self.display, (0,0))
 
             base.move()
@@ -105,9 +105,9 @@ class Game():
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
-            self.playerCar.moveLeft(5)
+            self.player.moveLeft(5)
         if keys[pygame.K_RIGHT]:
-            self.playerCar.moveRight(5)
+            self.player.moveRight(5)
 
     def reset_keys(self):
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
