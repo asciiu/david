@@ -55,12 +55,13 @@ class Game():
         self.credits = CreditsMenu(self)
         self.curr_menu = self.main_menu
 
-        self.all_sprites_list = pygame.sprite.Group()
         # player car
-        playerCar = Car(RED, 20, 30)
-        playerCar.rect.x = 200
-        playerCar.rect.y = 300
-        self.all_sprites_list.add(playerCar)
+        self.playerCar = Car(RED, 20, 30)
+        self.playerCar.rect.x = 200
+        self.playerCar.rect.y = 300
+        
+        self.all_sprites_list = pygame.sprite.Group()
+        self.all_sprites_list.add(self.playerCar)
 
     def game_loop(self):
         base = Base(self.DISPLAY_H-30)
@@ -99,6 +100,10 @@ class Game():
                     self.DOWN_KEY = True
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
+                if event.key == pygame.K_LEFT:
+                    self.playerCar.moveLeft(5)
+                if event.key == pygame.K_RIGHT:
+                    self.playerCar.moveRight(5)
                 if event.key == pygame.K_ESCAPE:
                     self.playing = False
 

@@ -22,3 +22,9 @@ class Car(pygame.sprite.Sprite):
  
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
+    
+    def moveRight(self, pixels):
+        self.rect.x += pixels
+
+    def moveLeft(self, pixels):
+        self.rect.x -= pixels
