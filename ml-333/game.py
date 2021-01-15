@@ -91,7 +91,7 @@ class Game():
             if event.type == pygame.QUIT:
                 self.running, self.playing = False, False
                 self.curr_menu.run_display = False
-            if event.type == pygame.KEYDOWN:
+            elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
                 if event.key == pygame.K_BACKSPACE:
@@ -100,12 +100,14 @@ class Game():
                     self.DOWN_KEY = True
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
-                if event.key == pygame.K_LEFT:
-                    self.playerCar.moveLeft(5)
-                if event.key == pygame.K_RIGHT:
-                    self.playerCar.moveRight(5)
                 if event.key == pygame.K_ESCAPE:
                     self.playing = False
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            self.playerCar.moveLeft(5)
+        if keys[pygame.K_RIGHT]:
+            self.playerCar.moveRight(5)
 
     def reset_keys(self):
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
